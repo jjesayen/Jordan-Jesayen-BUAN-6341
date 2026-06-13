@@ -1,0 +1,171 @@
+"""
+Project 1 Scoring Template
+SBA Loan Default Prediction
+
+Copy or rename this file to:
+
+    Project-1-scoring-FirstName-LastName-NetID.py
+
+Complete the scoring function below so it can load your trained artifacts,
+apply the same preprocessing and feature engineering used during training,
+and return predictions in the required format.
+
+Final submission is Python code + Markdown report + artifacts, not a Jupyter
+notebook.
+
+Required output format:
+    - Pandas DataFrame with columns: index, label, probability_0, probability_1
+    - index: unique identifier from input data
+    - label: predicted class, 0 or 1
+    - probability_0: probability of class 0
+    - probability_1: probability of class 1
+"""
+
+from pathlib import Path
+import pickle
+
+import numpy as np
+import pandas as pd
+
+
+PROJECT_ROOT = Path(__file__).resolve().parent
+ARTIFACTS_DIR = PROJECT_ROOT / "artifacts"
+HOLDOUT_FORMAT_PATH = (
+    PROJECT_ROOT
+    / "data"
+    / "SBA_loans_project_1_holdout_students_valid_no_labels.csv.zip"
+)
+REQUIRED_OUTPUT_COLUMNS = ["index", "label", "probability_0", "probability_1"]
+
+
+def project_1_scoring(data, model_type="sklearn"):
+    """
+    Score input data using saved Project 1 artifacts.
+
+    Parameters
+    ----------
+    data : pd.DataFrame
+        Input data in the same schema as the project data, without MIS_Status.
+    model_type : str
+        Model family to score. Must support "sklearn" and "h2o".
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame with columns: index, label, probability_0, probability_1.
+
+    Required workflow
+    -----------------
+    1. Load saved model-specific artifacts.
+    2. Apply the same preprocessing used during training.
+    3. Apply the same feature engineering used during training.
+    4. Apply fitted categorical encoders, scalers, and other transformations.
+    5. Select the same feature columns in the same order used during training.
+    6. Generate class probabilities.
+    7. Apply the saved optimized threshold to create labels.
+    8. Return all input rows in the required output format.
+
+    Important scoring rules
+    -----------------------
+    - Do not require MIS_Status in scoring input.
+    - Do not fit encoders, imputers, scalers, feature selectors, or models here.
+    - Do not drop input rows.
+    - Do not hard-code a default 0.5 threshold if training selected another one.
+    - Use relative paths under artifacts/.
+    """
+    if model_type not in {"sklearn", "h2o"}:
+        raise ValueError("model_type must be 'sklearn' or 'h2o'")
+
+    X = data.copy()
+
+    # TODO: Load artifacts based on model_type.
+    # Example:
+    # if model_type == "sklearn":
+    #     with open(ARTIFACTS_DIR / "sklearn_artifacts.pkl", "rb") as artifact_file:
+    #         artifacts = pickle.load(artifact_file)
+    # elif model_type == "h2o":
+    #     with open(ARTIFACTS_DIR / "h2o_artifacts.pkl", "rb") as artifact_file:
+    #         artifacts = pickle.load(artifact_file)
+
+    # TODO: Apply preprocessing.
+    # Handle missing values, convert data types, and clean invalid values using
+    # the same logic and fitted objects from training.
+
+    # TODO: Apply feature engineering.
+    # Create the same engineered features used during training.
+
+    # TODO: Apply categorical encoding and numerical transformations.
+    # Use transform-style behavior only. Do not fit anything during scoring.
+
+    # TODO: Select features for scoring.
+    # Use the same feature names and feature order saved during training.
+
+    # TODO: Generate predicted probabilities.
+    # For binary classification, create probability_1 and probability_0.
+
+    # TODO: Apply the saved optimized threshold for this model_type.
+
+    # TODO: Format output.
+    # Example:
+    # results = pd.DataFrame({
+    #     "index": data["index"],  # or the approved identifier column
+    #     "label": predicted_labels,
+    #     "probability_0": probability_0,
+    #     "probability_1": probability_1,
+    # })
+    # return results[REQUIRED_OUTPUT_COLUMNS]
+
+    raise NotImplementedError("Complete the scoring function implementation.")
+
+
+def validate_scoring_output(predictions, expected_rows):
+    """Validate the required Project 1 scoring output schema."""
+    assert isinstance(predictions, pd.DataFrame), "Output must be a DataFrame."
+    assert list(predictions.columns) == REQUIRED_OUTPUT_COLUMNS, (
+        "Output columns must be exactly: "
+        + ", ".join(REQUIRED_OUTPUT_COLUMNS)
+    )
+    assert len(predictions) == expected_rows, "Output row count must match input rows."
+    assert predictions["label"].isin([0, 1]).all(), "Labels must be 0 or 1."
+    assert pd.api.types.is_numeric_dtype(predictions["probability_0"]), (
+        "probability_0 must be numeric."
+    )
+    assert pd.api.types.is_numeric_dtype(predictions["probability_1"]), (
+        "probability_1 must be numeric."
+    )
+    probability_sum_error = (
+        predictions["probability_0"] + predictions["probability_1"] - 1.0
+    ).abs().max()
+    assert probability_sum_error < 1e-6, "Probabilities must sum to 1."
+
+
+def validate_scoring_function(model_type="sklearn"):
+    """
+    Load the holdout-format data and validate one scoring path.
+
+    Run this after you complete project_1_scoring and save the required
+    artifacts. Validate both model families before submission:
+
+        validate_scoring_function("sklearn")
+        validate_scoring_function("h2o")
+    """
+    print(f"Loading holdout-format dataset from {HOLDOUT_FORMAT_PATH}...")
+    holdout_data = pd.read_csv(HOLDOUT_FORMAT_PATH)
+
+    if "MIS_Status" in holdout_data.columns:
+        raise AssertionError("Holdout-format scoring input must not include MIS_Status.")
+
+    print(f"Running scoring function for model_type={model_type!r}...")
+    predictions = project_1_scoring(holdout_data, model_type=model_type)
+
+    print("Validating output format...")
+    validate_scoring_output(predictions, expected_rows=len(holdout_data))
+
+    print(f"Scoring validation passed for model_type={model_type!r}.")
+    return predictions
+
+
+if __name__ == "__main__":
+    print("Testing Project 1 scoring function...")
+    validate_scoring_function("sklearn")
+    validate_scoring_function("h2o")
