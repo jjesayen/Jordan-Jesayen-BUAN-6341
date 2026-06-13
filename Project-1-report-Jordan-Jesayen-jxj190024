@@ -1,0 +1,216 @@
+# Project 1 Report: SBA Loan Default Prediction
+
+**Student:** FirstName LastName  
+**NetID:** NetID  
+**Course:** BUAN 6341 Machine Learning  
+**Semester:** Summer 2026
+
+> Rename this file to `Project-1-report-FirstName-LastName-NetID.md`.
+
+## 1. Project Overview and Business Objective
+
+Briefly describe the SBA loan default prediction task, the business objective, and how the final model could be used.
+
+## 2. Data Quality Findings
+
+Summarize the data quality checks you performed.
+
+Include findings such as:
+
+- missing values;
+- invalid or inconsistent values;
+- numeric fields stored as strings;
+- high-cardinality categorical variables;
+- target distribution;
+- any fields excluded from modeling, such as index-like identifiers.
+
+## 3. Train/Validation/Test Split Strategy
+
+Describe how you split the labeled data.
+
+| Split | Purpose | Row count | Positive rate |
+| --- | --- | ---: | ---: |
+| Train | Fit preprocessing and models | TODO | TODO |
+| Validation | Tune models and thresholds | TODO | TODO |
+| Test | Final locked evaluation | TODO | TODO |
+
+Explain how you avoided using the Test set during tuning and model selection.
+
+## 4. Preprocessing and Leakage Controls
+
+Describe your cleaning and preprocessing workflow.
+
+Include:
+
+- missing-value handling;
+- categorical encoding;
+- numeric transformations or scaling;
+- any target encoding or WOE encoding;
+- which transformations were fit on Train only;
+- how the same transformations were applied to Validation, Test, and scoring data.
+
+## 5. Feature Engineering Summary
+
+List at least 10 qualifying engineered features. One-hot encoded columns, label encoded columns, target encoded columns, and simple direct copies do not count toward the 10 required engineered features.
+
+| # | Feature name | Formula or logic | Why it may help |
+| ---: | --- | --- | --- |
+| 1 | TODO | TODO | TODO |
+| 2 | TODO | TODO | TODO |
+| 3 | TODO | TODO | TODO |
+| 4 | TODO | TODO | TODO |
+| 5 | TODO | TODO | TODO |
+| 6 | TODO | TODO | TODO |
+| 7 | TODO | TODO | TODO |
+| 8 | TODO | TODO | TODO |
+| 9 | TODO | TODO | TODO |
+| 10 | TODO | TODO | TODO |
+
+If you created additional features but did not use them in the final model, explain why.
+
+## 6. sklearn Logistic Regression Tuning and Results
+
+Describe the sklearn Logistic Regression search space, number of combinations evaluated, tuning metric, and selection result. Evaluate at least 50 hyperparameter combinations.
+
+| Candidate or setting | Validation AUCPR or Log-loss | Notes |
+| --- | ---: | --- |
+| TODO | TODO | TODO |
+
+Report the final sklearn Test-set metrics.
+
+| Metric | Test result |
+| --- | ---: |
+| AUC | TODO |
+| AUCPR | TODO |
+| Log-loss | TODO |
+| Optimized F1 threshold | TODO |
+
+Confusion matrix at the optimized threshold:
+
+|  | Predicted 0 | Predicted 1 |
+| --- | ---: | ---: |
+| Actual 0 | TODO | TODO |
+| Actual 1 | TODO | TODO |
+
+Optional image:
+
+```markdown
+![sklearn results](artifacts/images/sklearn_results.png)
+```
+
+## 7. H2O-3 GLM Tuning and Results
+
+Describe the H2O-3 GLM search space, number of combinations evaluated, tuning metric, and selection result. Evaluate at least 50 hyperparameter combinations.
+
+| Candidate or setting | Validation AUCPR or Log-loss | Notes |
+| --- | ---: | --- |
+| TODO | TODO | TODO |
+
+Report the final H2O-3 GLM Test-set metrics.
+
+| Metric | Test result |
+| --- | ---: |
+| AUC | TODO |
+| AUCPR | TODO |
+| Log-loss | TODO |
+| Optimized F1 threshold | TODO |
+
+Confusion matrix at the optimized threshold:
+
+|  | Predicted 0 | Predicted 1 |
+| --- | ---: | ---: |
+| Actual 0 | TODO | TODO |
+| Actual 1 | TODO | TODO |
+
+Optional image:
+
+```markdown
+![H2O GLM results](artifacts/images/h2o_glm_results.png)
+```
+
+## 8. Threshold Optimization
+
+Explain how you selected probability thresholds using F1.
+
+| Model family | Threshold source | Selected threshold | Validation F1 |
+| --- | --- | ---: | ---: |
+| sklearn Logistic Regression | TODO | TODO | TODO |
+| H2O-3 GLM | TODO | TODO | TODO |
+
+## 9. Final Test-Set Model Comparison
+
+Compare the fully tuned model families on the locked Test set.
+
+| Model family | Test AUC | Test AUCPR | Test Log-loss | Threshold | Notes |
+| --- | ---: | ---: | ---: | ---: | --- |
+| sklearn Logistic Regression | TODO | TODO | TODO | TODO | TODO |
+| H2O-3 GLM | TODO | TODO | TODO | TODO | TODO |
+
+Optional image:
+
+```markdown
+![Model comparison](artifacts/images/model_comparison.png)
+```
+
+## 10. Coefficient Interpretation
+
+Interpret the selected linear-model coefficients. If your final selected model is not the best model for coefficient interpretation, choose the clearest fully tuned linear model and explain why you are using it for interpretation.
+
+Interpret coefficients in both model-input terms and original-feature terms. For scaled, encoded, transformed, or engineered variables, explain how the model coefficient maps back to the original SBA feature or business quantity. Do not present standardized or encoded coefficients as if they were raw original-scale effects.
+
+Include:
+
+- the top positive coefficients;
+- the top negative coefficients;
+- what the coefficients mean after preprocessing, encoding, scaling, and feature engineering;
+- how each interpreted coefficient connects back to the original feature, original scale, or business concept;
+- at least 3 features where interpretation is non-obvious because of encoding, scaling, transformations, interactions, or correlated features;
+- how coefficient evidence supports or complicates the final model recommendation.
+
+| Feature | Coefficient | Direction | Interpretation notes |
+| --- | ---: | --- | --- |
+| TODO | TODO | Positive/Negative | TODO |
+
+Optional image:
+
+```markdown
+![Coefficient interpretation](artifacts/images/coefficient_interpretation.png)
+```
+
+## 11. Final Model Selection and Rationale
+
+State which model you selected as your final model and why.
+
+Discuss:
+
+- performance;
+- coefficient interpretability;
+- scoring reliability;
+- practical tradeoffs;
+- any known limitations.
+
+## 12. Scoring Workflow and Artifact Summary
+
+Describe how your scoring file works and what artifacts it loads.
+
+| Artifact path | Purpose | Used by model type |
+| --- | --- | --- |
+| `artifacts/TODO` | TODO | TODO |
+
+Confirm that your scoring function:
+
+- accepts input without `MIS_Status`;
+- supports both `model_type="sklearn"` and `model_type="h2o"`;
+- preserves all input rows;
+- returns `index`, `label`, `probability_0`, and `probability_1`;
+- uses saved preprocessing objects and thresholds instead of fitting during scoring.
+
+## 13. Conclusions and Practical Recommendations
+
+Summarize:
+
+- what you implemented;
+- the most important model findings;
+- the final model performance;
+- recommendations for using or improving the model;
+- limitations or risks.
